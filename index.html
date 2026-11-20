@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUMOMASTERS // GRAN PODIO</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#00f3ff;--magenta:#ff007f;--yellow:#fcee0a;--purple:#9d4edd;--bronze:#ff5500;--panel:#0d0a1d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Rajdhani',sans-serif;background:#06040f;color:#f8fafc;min-height:100vh;overflow-x:hidden;
+ background-image:radial-gradient(circle at 50% 0%,rgba(157,78,221,.22) 0%,rgba(6,4,15,.96) 78%),
+ linear-gradient(rgba(0,243,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,243,255,.05) 1px,transparent 1px);
+ background-size:100% 100%,44px 44px,44px 44px}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:998;
+ background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0,rgba(0,0,0,.14) 1px,transparent 1px,transparent 3px)}
+.clip{clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px))}
+.clip-sm{clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.top{clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%,0 14px)}
+
+header{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;
+ padding:.75rem 1.25rem;background:rgba(9,6,23,.95);backdrop-filter:blur(8px);border-bottom:2px solid rgba(0,243,255,.6);
+ box-shadow:0 4px 30px rgba(0,243,255,.18)}
+.brand{display:flex;align-items:center;gap:.75rem}
+.logo{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,243,255,.6);
+ background:linear-gradient(135deg,var(--magenta),var(--purple));box-shadow:0 0 18px rgba(255,0,127,.65)}
+.logo svg{width:24px;height:24px;color:var(--yellow)}
+.brand h1{font-family:'Orbitron';font-weight:900;font-size:clamp(1.1rem,3vw,1.9rem);letter-spacing:.15em;text-shadow:0 0 10px rgba(0,243,255,.7)}
+.brand h1 span{color:var(--cyan)}
+.tabs{display:flex;gap:.6rem;font-family:'Orbitron'}
+.tab{cursor:pointer;border:1px solid rgba(0,243,255,.5);background:var(--panel);color:var(--cyan);font:inherit;font-weight:900;
+ font-size:clamp(.7rem,1.8vw,.9rem);letter-spacing:.1em;text-transform:uppercase;padding:.65rem 1.1rem;transition:.2s}
+.tab:hover{background:rgba(0,243,255,.2)}
+.tab.active{background:var(--magenta);border-color:var(--magenta);color:#fff;box-shadow:0 0 15px rgba(255,0,127,.5)}
+
+main{max-width:72rem;margin:0 auto;padding:1.5rem 1rem 3rem;display:flex;flex-direction:column;align-items:center}
+.head{text-align:center;margin:.5rem 0 7rem}
+.head small{display:block;font-family:'Orbitron';font-weight:700;font-size:clamp(.65rem,1.6vw,1rem);color:var(--magenta);letter-spacing:.35em;text-transform:uppercase;margin-bottom:.5rem}
+.head h2{font-family:'Orbitron';font-weight:900;font-size:clamp(2.2rem,8vw,4.6rem);letter-spacing:.06em;text-transform:uppercase;color:#fff;animation:flicker 4s infinite alternate}
+.head h3{font-family:'Orbitron';font-weight:800;font-size:clamp(.9rem,2.5vw,1.4rem);letter-spacing:.4em;color:var(--yellow);margin-top:.5rem}
+@keyframes flicker{0%,18%,22%,25%,53%,57%,100%{text-shadow:0 0 6px #fff,0 0 14px var(--cyan),0 0 30px var(--cyan),0 0 60px var(--magenta);opacity:1}
+ 20%,24%,55%{text-shadow:none;opacity:.35}}
+
+#stage{display:flex;align-items:flex-end;justify-content:center;gap:clamp(.5rem,2.5vw,2rem);width:100%;height:clamp(22rem,60vh,30rem)}
+.col{display:flex;flex-direction:column;align-items:center;opacity:0}
+.col.p1{width:clamp(9rem,34%,16rem);z-index:3}
+.col.p2,.col.p3{width:clamp(7rem,30%,13rem)}
+.play .p3{animation:rise .8s ease-out .3s forwards}
+.play .p2{animation:rise .8s ease-out .9s forwards}
+.play .p1{animation:slam .8s cubic-bezier(.25,1,.5,1) 1.7s forwards}
+@keyframes rise{0%{transform:translateY(100vh);opacity:0}70%{transform:translateY(-15px);opacity:1}100%{transform:translateY(0);opacity:1}}
+@keyframes slam{0%{transform:translateY(-100vh) scale(.8);opacity:0}70%{transform:translateY(0) scale(1.05);opacity:1}
+ 85%{transform:translateY(-18px) scale(.98);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
+.shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes shake{0%,100%{transform:translate(0)}10%,30%,50%,70%,90%{transform:translate(-4px,3px) rotate(-.5deg)}20%,40%,60%,80%{transform:translate(4px,-3px) rotate(.5deg)}}
+
+.who{display:flex;flex-direction:column;align-items:center;margin-bottom:1rem;position:relative;animation:float 3.4s ease-in-out infinite}
+.p1 .who{margin-bottom:1.5rem;animation-duration:3s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.badge{display:flex;align-items:center;justify-content:center;background:var(--panel);border:2px solid;margin-bottom:.75rem;font-family:'Orbitron';font-weight:900}
+.p1 .badge{width:clamp(4.5rem,11vw,8rem);height:clamp(4.5rem,11vw,8rem);border-width:4px;font-size:clamp(2rem,6vw,3.75rem);color:var(--yellow);margin-top:1.5rem;animation:pg 2s infinite}
+.p2 .badge{width:clamp(3.5rem,8vw,5.5rem);height:clamp(3.5rem,8vw,5.5rem);font-size:clamp(1.5rem,4vw,2rem);color:var(--cyan);animation:pc 2s infinite}
+.p3 .badge{width:clamp(3.5rem,7.5vw,5rem);height:clamp(3.5rem,7.5vw,5rem);font-size:clamp(1.5rem,4vw,2rem);color:var(--bronze);animation:pb 2s infinite}
+@keyframes pg{0%,100%{box-shadow:0 0 18px rgba(252,238,10,.55)}50%{box-shadow:0 0 40px rgba(252,238,10,1),0 0 20px rgba(252,238,10,.65) inset}}
+@keyframes pc{0%,100%{box-shadow:0 0 18px rgba(0,243,255,.5)}50%{box-shadow:0 0 36px rgba(0,243,255,.95),0 0 16px rgba(0,243,255,.5) inset}}
+@keyframes pb{0%,100%{box-shadow:0 0 18px rgba(255,85,0,.5)}50%{box-shadow:0 0 36px rgba(255,85,0,.95),0 0 16px rgba(255,85,0,.5) inset}}
+.p1 .badge{border-color:var(--yellow)}.p2 .badge{border-color:var(--cyan)}.p3 .badge{border-color:var(--bronze)}
+.name{text-align:center;font-weight:800;line-height:1.1;padding:0 .25rem;word-break:break-word}
+.p1 .name{font-family:'Orbitron';font-weight:900;font-size:clamp(1.2rem,3.6vw,2.4rem);color:var(--yellow);text-shadow:0 0 14px rgba(252,238,10,.85)}
+.p2 .name{font-size:clamp(1.2rem,3vw,2rem);color:#cffafe;text-shadow:0 0 10px rgba(0,243,255,.7)}
+.p3 .name{font-size:clamp(1.2rem,3vw,2rem);color:#fdba74}
+.tag{font-family:'Orbitron';font-weight:900;font-size:clamp(.6rem,1.4vw,.8rem);letter-spacing:.2em;color:#000;background:var(--yellow);padding:.25rem 1rem;margin-top:.6rem;box-shadow:0 0 15px rgba(252,238,10,.7)}
+.trophy{position:absolute;top:-3.6rem;font-size:clamp(3rem,7vw,4.5rem);filter:drop-shadow(0 0 25px rgba(252,238,10,.9));animation:trophy 2.5s ease-in-out infinite;z-index:5}
+@keyframes trophy{0%,100%{transform:translateY(0) rotate(-4deg) scale(1)}50%{transform:translateY(-14px) rotate(4deg) scale(1.1)}}
+
+.block{width:100%;position:relative;overflow:hidden}
+.block b{position:absolute;top:.6rem;width:100%;text-align:center;font-family:'Orbitron';font-weight:900}
+.block::after{content:'';position:absolute;top:0;left:-150%;width:50%;height:100%;
+ background:linear-gradient(to right,transparent,rgba(0,243,255,.35),transparent);transform:skewX(-25deg);animation:shine 4s infinite}
+@keyframes shine{0%,20%{left:-150%}40%,100%{left:200%}}
+.p1 .block{height:clamp(11rem,28vh,15rem);background:linear-gradient(to top,#1a1604,#423808,#7a680c);border-top:6px solid var(--yellow);box-shadow:0 0 40px rgba(252,238,10,.35)}
+.p1 .block b{color:rgba(252,238,10,.4);font-size:clamp(3rem,8vw,5.5rem)}
+.p2 .block{height:clamp(8rem,20vh,11rem);background:linear-gradient(to top,#08121e,#0c3b4e);border-top:4px solid var(--cyan);box-shadow:0 0 30px rgba(0,243,255,.3)}
+.p2 .block b{color:rgba(0,243,255,.4);font-size:clamp(2.2rem,6vw,4rem)}
+.p3 .block{height:clamp(5.5rem,14vh,8rem);background:linear-gradient(to top,#1a0a04,#592108);border-top:4px solid var(--bronze);box-shadow:0 0 25px rgba(255,85,0,.25)}
+.p3 .block b{color:rgba(255,85,0,.4);font-size:clamp(1.8rem,5vw,3rem)}
+
+.replay{margin-top:2.5rem;cursor:pointer;border:1px solid rgba(252,238,10,.5);background:var(--panel);color:var(--yellow);
+ font-family:'Orbitron';font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;padding:.7rem 1.4rem;transition:.2s}
+.replay:hover{background:var(--yellow);color:#000}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}.col{opacity:1!important}}
+</style>
+</head>
+<body id="body">
+
+<header>
+  <div class="brand">
+    <div class="logo clip-sm"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+    <h1>SUMO<span>MASTERS</span></h1>
+  </div>
+  <nav class="tabs">
+    <button class="tab clip-sm" data-cat="mega">MegaSumo</button>
+    <button class="tab clip-sm" data-cat="mini">MiniSumo</button>
+  </nav>
+</header>
+
+<main>
+  <div class="head">
+    <small>// SYSTEM_OVERRIDE // RESULTADOS DEFINITIVOS</small>
+    <h2>GRAN PODIO</h2>
+    <h3 id="cat-title">MEGASUMO</h3>
+  </div>
+
+  <div id="stage">
+    <div class="col p2">
+      <div class="who"><div class="badge clip-sm">2</div><span class="name" id="n2"></span></div>
+      <div class="block top"><b>II</b></div>
+    </div>
+    <div class="col p1">
+      <div class="who"><div class="trophy">🏆</div><div class="badge clip">1</div><span class="name" id="n1"></span><span class="tag clip-sm">SUMO MASTER</span></div>
+      <div class="block top"><b>I</b></div>
+    </div>
+    <div class="col p3">
+      <div class="who"><div class="badge clip-sm">3</div><span class="name" id="n3"></span></div>
+      <div class="block top"><b>III</b></div>
+    </div>
+  </div>
+
+  <button class="replay clip-sm" id="replay">⚡ Repetir animación</button>
+</main>
+
+<script>
+// ============================================================
+//  EDITA AQUÍ LOS NOMBRES (1°, 2°, 3°)
+// ============================================================
+const PODIOS = {
+  mega: { titulo: "MEGASUMO", lugares: ["Gurren Loggan", "Min", "Harby"] },
+  mini: { titulo: "MINISUMO", lugares: ["---", "---", "---"] }
+};
+
+const stage = document.getElementById('stage');
+const body = document.getElementById('body');
+let timer = null;
+
+function show(cat) {
+  if (!PODIOS[cat]) cat = 'mega';
+  const p = PODIOS[cat];
+  document.getElementById('cat-title').textContent = p.titulo;
+  p.lugares.forEach((n, i) => document.getElementById('n' + (i + 1)).textContent = n);
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+  history.replaceState(null, '', '#' + cat);
+  play();
+}
+
+function play() {
+  clearTimeout(timer);
+  body.classList.remove('shake');
+  stage.classList.remove('play');
+  void stage.offsetWidth; // reinicia animaciones
+  stage.classList.add('play');
+  timer = setTimeout(() => {
+    body.classList.add('shake');
+    const end = Date.now() + 3800;
+    const colors = ['#fcee0a', '#00f3ff', '#ff007f', '#ffffff'];
+    (function frame() {
+      confetti({ particleCount: 7, angle: 60, spread: 60, origin: { x: 0, y: .65 }, colors });
+      confetti({ particleCount: 7, angle: 120, spread: 60, origin: { x: 1, y: .65 }, colors });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }, 2450);
+}
+
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => show(t.dataset.cat));
+document.getElementById('replay').onclick = play;
+document.addEventListener('keydown', e => {
+  if (e.key === '1') show('mega');
+  if (e.key === '2') show('mini');
+  if (e.key.toLowerCase() === 'r') play();
+});
+show(location.hash.replace('#', '') || 'mega');
+</script>
+</body>
+</html>

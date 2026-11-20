@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: sumomasters-podio
+    runtime: static
+    staticPublishPath: .
